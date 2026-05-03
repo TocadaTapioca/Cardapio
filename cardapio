@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Toca da Tapioca - Cardápio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toca da Tapioca - Faça seu pedido</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-    body{background:#080808;color:#fff}
-    header{background:linear-gradient(135deg,#000,#1b0d00,#ff7a00);padding:28px 16px;text-align:center}
-    header h1{font-size:34px;font-weight:900}
-    header span{color:#ff8a00}
-    header p{color:#ffe0bd;margin-top:8px}
+    body{background:#090909;color:#fff}
+    header{background:linear-gradient(135deg,#000,#211000,#ff8500);padding:28px 16px;text-align:center}
+    header h1{font-size:34px} header span{color:#ff8a00}
+    header p{color:#ffe2bd;margin-top:8px}
     .container{max-width:1100px;margin:auto;padding:16px}
-    input,select{width:100%;padding:13px;margin:7px 0;border-radius:10px;border:1px solid #444;background:#1b1b1b;color:white;font-size:15px}
+    .customer{width:100%;padding:13px;margin:7px 0;border-radius:10px;border:1px solid #444;background:#1b1b1b;color:#fff;font-size:15px}
     .section-title{color:#ff8a00;margin:24px 0 12px;border-bottom:2px solid #ff8a00;padding-bottom:8px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-    .card{background:#151515;border:1px solid #333;border-radius:16px;padding:15px}
+    .card{background:#161616;border:1px solid #333;border-radius:16px;padding:15px}
     .card h3{font-size:18px;margin-bottom:8px}
     .card p{color:#ccc;font-size:14px;line-height:1.35;min-height:50px}
     .price{color:#00d26a;font-weight:900;font-size:20px;margin:12px 0}
     .row{display:flex;gap:8px;align-items:center}
-    .qty{width:58px;text-align:center}
+    .qty{width:58px;padding:10px;border-radius:8px;border:0;text-align:center}
     button{cursor:pointer;border:0;border-radius:10px;padding:11px 13px;font-weight:900}
     .add{background:#ff8a00;color:#000}
     .cart{position:sticky;bottom:0;background:#101010;border-top:2px solid #ff8a00;padding:16px;margin-top:30px;box-shadow:0 -8px 25px rgba(0,0,0,.45)}
@@ -30,27 +29,27 @@
     .total{font-size:24px;color:#00d26a;font-weight:900;margin:14px 0}
     .whats{display:block;text-align:center;background:#25d366;color:#fff;text-decoration:none;font-weight:900;border-radius:14px;padding:15px;font-size:18px}
     .clear{background:#333;color:#fff;margin-top:10px;width:100%}
+    .tag{display:inline-block;background:#ff8a00;color:#000;font-weight:900;border-radius:999px;padding:4px 9px;font-size:12px;margin-bottom:8px}
     .small{font-size:12px;color:#aaa;text-align:center;margin-top:8px}
   </style>
 </head>
 <body>
-
 <header>
   <h1>TOCA DA <span>TAPIOCA</span></h1>
-  <p>Sabor que abraça, qualidade que vicia!</p>
+  <p>Escolha seu pedido e envie direto no WhatsApp</p>
 </header>
 
 <main class="container">
-  <input id="nome" placeholder="Seu nome">
-  <input id="endereco" placeholder="Endereço para entrega">
-  <select id="pagamento">
+  <input id="nome" class="customer" placeholder="Seu nome" />
+  <input id="endereco" class="customer" placeholder="Endereço para entrega" />
+  <select id="pagamento" class="customer">
     <option value="">Escolha a forma de pagamento</option>
     <option value="PIX">PIX</option>
     <option value="Cartão de Débito">Cartão de Débito</option>
     <option value="Cartão de Crédito">Cartão de Crédito</option>
   </select>
-  <input id="troco" placeholder="Troco para quanto? (se precisar)">
-  <input id="obs" placeholder="Observação do pedido (opcional)">
+  <input id="troco" class="customer" placeholder="Troco para quanto? (se precisar)" />
+  <input id="obs" class="customer" placeholder="Observação do pedido (opcional)" />
 
   <h2 class="section-title">Tapiocas Salgadas</h2>
   <div class="grid" id="salgadas"></div>
@@ -70,7 +69,7 @@
     <div class="total" id="total">Total: R$ 0,00</div>
     <a id="whatsapp" class="whats" href="#" target="_blank">Enviar pedido no WhatsApp</a>
     <button class="clear" onclick="clearCart()">Limpar pedido</button>
-    <p class="small">Seu pedido vai direto para o WhatsApp da loja.</p>
+    <p class="small">O pedido chegará no WhatsApp com itens, total, endereço e forma de pagamento.</p>
   </section>
 </main>
 
@@ -89,10 +88,11 @@ const items = {
     ['Peito de Peru Especial da Casa','Peito de peru + queijo minas + orégano',20.40],
     ['Tapioca Sabor Pizza','Mussarela + calabresa + tomate + orégano',21.20],
     ['Carne Seca Cremosa','Carne seca desfiada + Catupiry',24.60],
-    ['Camarão Cremoso Premium','Camarões suculentos + Catupiry',29.70]
+    ['Camarão Cremoso Premium','Camarões suculentos + Catupiry',29.70],
+    ['Tapioca Café da Manhã','Ovo + bacon + queijo mussarela',19.90]
   ],
   doces: [
-    ['Nutella com Morango','Tapioca recheada com Nutella e morangos frescos',24.60],
+    ['Nutella com Morango','Nutella cremosa + morangos frescos',24.60],
     ['Beijinho da Toca','Leite condensado + coco',17.00],
     ['Romeu e Julieta','Queijo minas + goiabada',18.70],
     ['Banana Supreme','Nutella cremosa + banana doce',22.00],
@@ -102,22 +102,21 @@ const items = {
   bebidas: [
     ['Coca-Cola Lata 350ml','Refrigerante lata',6.00],
     ['Guaraná Antarctica Lata 350ml','Refrigerante lata',6.00],
-    ['GuaraCrac Original 290ml','Copo 290ml',2.00],
-    ['Coca-Cola Garrafa 200ml','Garrafinha 200ml',3.50]
+    ['GuaraCrac Original 290ml','Copo GuaraCrac',2.00],
+    ['Coca-Cola Garrafa 200ml','Coquinha garrafa',3.50]
   ],
   combos: [
     ['Combo Solteiro Explosão','1 Tapioca Explosão de Frango + uma bebida gelada',25.10],
     ['Combo Clássico','1 Clássica Mista + uma bebida gelada',21.25],
-    ['Combo Casal da Toca','Escolha 2 tapiocas bem recheadas + 2 bebidas geladinhas',57.50],
-    ['Combo Família da Toca','Escolha 4 tapiocas bem recheadas + 4 bebidas geladinhas',102.00]
+    ['Combo Casal da Toca','Escolha 2 tapiocas + 2 bebidas geladas',57.50],
+    ['Combo Família da Toca','Escolha 4 tapiocas + 4 bebidas geladas',102.00],
+    ['Combo Festa da Toca','Escolha 4 salgadas + 2 doces + 4 bebidas',99.90]
   ]
 };
 
 let cart = [];
 
-function money(v){
-  return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-}
+function money(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
 function renderSection(key){
   const el = document.getElementById(key);
@@ -125,6 +124,7 @@ function renderSection(key){
     const id = key+i;
     el.innerHTML += `
       <div class="card">
+        <span class="tag">Toca da Tapioca</span>
         <h3>${it[0]}</h3>
         <p>${it[1]}</p>
         <div class="price">${money(it[2])}</div>
@@ -195,6 +195,5 @@ function clearCart(){
 });
 renderCart();
 </script>
-
 </body>
 </html>
