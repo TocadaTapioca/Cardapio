@@ -91,25 +91,28 @@ const items = {
     ['Carne Seca Cremosa','Carne seca desfiada + Catupiry',24.60],
     ['Camarão Cremoso Premium','Camarões suculentos + Catupiry',29.70]
   ],
+
   doces: [
-    ['Nutella com Morango','Tapioca recheada com Nutella e morangos frescos',24.60],
+    ['Nutella com Morango','Nutella + morango',24.60],
     ['Beijinho da Toca','Leite condensado + coco',17.00],
     ['Romeu e Julieta','Queijo minas + goiabada',18.70],
-    ['Banana Supreme','Nutella cremosa + banana doce',22.00],
-    ['Prestígio da Toca','Nutella derretida + coco',23.70],
-    ['Ninho com Nutella Supreme','Brigadeiro de Ninho + Nutella + leite em pó',25.40]
+    ['Banana Supreme','Nutella + banana',22.00],
+    ['Prestígio da Toca','Nutella + coco',23.70],
+    ['Ninho com Nutella Supreme','Ninho + Nutella',25.40]
   ],
+
   bebidas: [
-    ['Coca-Cola Lata 350ml','Refrigerante lata',6.00],
-    ['Guaraná Antarctica Lata 350ml','Refrigerante lata',6.00],
-    ['GuaraCrac Original 290ml','Copo 290ml',2.00],
-    ['Coca-Cola Garrafa 200ml','Garrafinha 200ml',3.50]
+    ['Coca-Cola Lata','350ml',6.00],
+    ['Guaraná Antarctica','350ml',6.00],
+    ['GuaraCrac','290ml',2.00],
+    ['Coca-Cola 200ml','Garrafinha',3.50]
   ],
+
   combos: [
-    ['Combo Solteiro Explosão','1 Tapioca Explosão de Frango + uma bebida gelada',25.10],
-    ['Combo Clássico','1 Clássica Mista + uma bebida gelada',21.25],
-    ['Combo Casal da Toca','Escolha 2 tapiocas bem recheadas + 2 bebidas geladinhas',57.50],
-    ['Combo Família da Toca','Escolha 4 tapiocas bem recheadas + 4 bebidas geladinhas',102.00]
+    ['Combo Solteiro','Escolha sabores',25.10],
+    ['Combo Clássico','Escolha sabores',21.25],
+    ['Combo Casal','Escolha sabores',57.50],
+    ['Combo Família','Escolha sabores',102.00]
   ]
 };
 
@@ -121,18 +124,44 @@ function money(v){
 
 function renderSection(key){
   const el = document.getElementById(key);
+
   items[key].forEach((it,i)=>{
     const id = key+i;
-    el.innerHTML += `
-      <div class="card">
-        <h3>${it[0]}</h3>
-        <p>${it[1]}</p>
-        <div class="price">${money(it[2])}</div>
-        <div class="row">
-          <input class="qty" type="number" id="${id}" min="1" value="1">
-          <button class="add" onclick="addItem('${key}',${i},'${id}')">Adicionar</button>
+
+    if(key === 'combos'){
+      el.innerHTML += `
+        <div class="card">
+          <h3>${it[0]}</h3>
+          <p>${it[1]}</p>
+
+          <label>Escolha os sabores:</label>
+          <select id="sabores_${id}" multiple>
+            <option>Queijo Top</option>
+            <option>Clássica Mista</option>
+            <option>Tapioca Peito de Peru Especial da Casa</option>
+            <option>Tapioca Sabor Pizza</option>
+            <option>Tapioca Explosão de Frango</option>
+          </select>
+
+          <div class="price">${money(it[2])}</div>
+
+          <button class="add" onclick="addCombo('${id}', ${it[2]})">
+            Adicionar Combo
+          </button>
         </div>
-      </div>`;
+      `;
+    } else {
+      el.innerHTML += `
+        <div class="card">
+          <h3>${it[0]}</h3>
+          <p>${it[1]}</p>
+          <div class="price">${money(it[2])}</div>
+          <div class="row">
+            <input class="qty" type="number" id="${id}" min="1" value="1">
+            <button class="add" onclick="addItem('${key}',${i},'${id}')">Adicionar</button>
+          </div>
+        </div>`;
+    }
   });
 }
 
@@ -140,6 +169,26 @@ function addItem(key,i,id){
   const q = parseInt(document.getElementById(id).value || 1);
   const [name,desc,price] = items[key][i];
   cart.push({name, price, qty:q});
+  renderCart();
+}
+
+function addCombo(id, price){
+  const select = document.getElementById('sabores_'+id);
+  const selected = [...select.selectedOptions].map(o => o.value);
+
+  if(selected.length === 0){
+    alert('Escolha pelo menos 1 sabor!');
+    return;
+  }
+
+  const nomeCombo = 'Combo: ' + selected.join(', ');
+
+  cart.push({
+    name: nomeCombo,
+    price: price,
+    qty: 1
+  });
+
   renderCart();
 }
 
@@ -164,24 +213,14 @@ function renderCart(){
 
   document.getElementById('total').innerText = 'Total: ' + money(total);
 
-  const nome = document.getElementById('nome').value;
-  const endereco = document.getElementById('endereco').value;
-  const pagamento = document.getElementById('pagamento').value;
-  const troco = document.getElementById('troco').value;
-  const obs = document.getElementById('obs').value;
+  let msg = `Olá, quero pedir:%0A%0A`;
 
-  let msg = `Olá, Toca da Tapioca! Quero fazer um pedido:%0A%0A`;
-  if(nome) msg += `Nome: ${nome}%0A`;
-  if(endereco) msg += `Endereço: ${endereco}%0A`;
-  if(pagamento) msg += `Forma de pagamento: ${pagamento}%0A`;
-  if(troco) msg += `Troco para: ${troco}%0A`;
+  cart.forEach(c => msg += `- ${c.qty}x ${c.name}%0A`);
 
-  msg += `%0AItens:%0A`;
-  cart.forEach(c => msg += `- ${c.qty}x ${c.name} = ${money(c.price*c.qty)}%0A`);
-  msg += `%0ATotal: ${money(total)}%0A`;
-  if(obs) msg += `Observação: ${obs}%0A`;
+  msg += `%0ATotal: ${money(total)}`;
 
-  document.getElementById('whatsapp').href = `https://wa.me/${phone}?text=${msg}`;
+  document.getElementById('whatsapp').href =
+    `https://wa.me/${phone}?text=${msg}`;
 }
 
 function clearCart(){
@@ -190,11 +229,5 @@ function clearCart(){
 }
 
 ['salgadas','doces','bebidas','combos'].forEach(renderSection);
-['nome','endereco','pagamento','troco','obs'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', renderCart);
-});
 renderCart();
 </script>
-
-</body>
-</html>
